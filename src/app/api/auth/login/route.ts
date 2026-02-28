@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate tokens
-    const accessToken = signAccessToken({ userId: user.id, role: user.role })
+    const accessToken = await signAccessToken({ userId: user.id, role: user.role })
     const refreshToken = generateRefreshToken()
 
     // Create session (stores hash of refresh token)
