@@ -27,11 +27,11 @@ export async function POST(request: NextRequest) {
     const refreshToken = generateRefreshToken()
 
     // Create session (stores hash of refresh token)
-    await createSession(user.id, refreshToken)
+    await createSession(user.id)
 
     // Set cookies
     const cookieStore = await cookies()
-    
+
     // Access token cookie (15 minutes)
     cookieStore.set('accessToken', accessToken, {
       httpOnly: true,
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Return user info (without sensitive data)
-    return NextResponse.json({
+    return Response.json({
       user: {
         id: user.id,
         email: user.email,

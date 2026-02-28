@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 
 export default async function AdminPage() {
-  const headersList = headers()
+  const headersList = await headers()
   const userId = headersList.get('x-user-id')
   const userRole = headersList.get('x-user-role')
 

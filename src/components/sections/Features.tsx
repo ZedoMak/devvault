@@ -1,45 +1,56 @@
-import { Lock, Key, Eye, History } from 'lucide-react'
+import { Lock, Fingerprint, Users, Activity } from 'lucide-react'
 
 const features = [
   {
     icon: Lock,
-    title: 'End-to-end encryption',
-    description: 'Your secrets are encrypted before they leave your browser. We never see your plaintext data.',
+    title: 'Military-Grade Encryption',
+    description: 'Your secrets are encrypted before they leave your browser using AES-GCM. We never see your plaintext data or encryption keys.',
   },
   {
-    icon: Key,
-    title: 'Secure authentication',
-    description: 'OAuth support, JWT tokens with rotation, and session management to keep your account safe.',
+    icon: Fingerprint,
+    title: 'JWT Authentication',
+    description: 'Secure, stateless authentication. Featuring automatic token rotation, refresh mechanisms, and strict session management.',
   },
   {
-    icon: Eye,
-    title: 'Audit logs',
-    description: 'Every access and change is logged. Know exactly who viewed what and when.',
+    icon: Users,
+    title: 'Role-Based Access (RBAC)',
+    description: 'Granular permissions. Control exactly who can view, edit, or manage specific environment variables and vault items.',
   },
   {
-    icon: History,
-    title: 'Version history',
-    description: 'Track changes to your secrets and revert if needed. (Coming soon)',
+    icon: Activity,
+    title: 'Comprehensive Audit Logs',
+    description: 'Complete visibility. Every access, modification, and login attempt is immutably logged for compliance and security reviews.',
   },
 ]
 
 export default function Features() {
   return (
-    <section id="features" className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl lg:text-4xl font-bold text-center mb-12">
-          Everything you need to stay secure
-        </h2>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature) => (
+    <section id="features" className="py-24 relative overflow-hidden">
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
+            Built for uncompromising security
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Everything you need to secure your developer infrastructure, built right in.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+          {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="p-6 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all hover:scale-105"
+              className="group relative p-8 rounded-2xl glass-card hover:bg-card/80 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 overflow-hidden"
+              style={{ animationDelay: `${index * 150}ms` }}
             >
-              <feature.icon className="h-10 w-10 text-blue-500 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-400 text-sm">{feature.description}</p>
+              {/* Subtle hover gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative mb-6 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 transition-all duration-300">
+                <feature.icon className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>
