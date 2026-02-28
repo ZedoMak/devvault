@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Lock, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,16 +9,49 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { toast } from 'sonner'
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
-        // Simulate auth request
-        setTimeout(() => setIsLoading(false), 1500)
+
+        const formData = new FormData(e.currentTarget)
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                toast.success('Welcome back! Redirecting to dashboard...')
+                
+                // Redirect to dashboard after successful login
+                setTimeout(() => {
+                    router.push('/dashboard')
+                    router.refresh()
+                }, 1000)
+            } else {
+                const errorData = await response.json()
+                toast.error(errorData.error || 'Login failed')
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+            toast.error('An unexpected error occurred')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -82,6 +116,7 @@ export default function LoginPage() {
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="m@example.com"
                                     required
@@ -98,6 +133,7 @@ export default function LoginPage() {
                                 <div className="relative">
                                     <Input
                                         id="password"
+                                        name="password"
                                         type={showPassword ? "text" : "password"}
                                         required
                                         className="bg-background/50 border-border/50 focus-visible:ring-primary h-11 pr-10"

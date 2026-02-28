@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, Lock, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,12 +9,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [password, setPassword] = useState('')
     const [strength, setStrength] = useState(0)
+    const router = useRouter()
 
     // Password strength calculation
     useEffect(() => {
@@ -37,10 +40,50 @@ export default function SignupPage() {
         }
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
-        setTimeout(() => setIsLoading(false), 1500)
+
+        const formData = new FormData(e.currentTarget)
+        const firstName = formData.get('firstName') as string
+        const lastName = formData.get('lastName') as string
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    firstName, 
+                    lastName, 
+                    email, 
+                    password,
+                    confirmPassword: password // Since we don't have separate confirm field
+                }),
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                toast.success('Account created successfully! Redirecting to dashboard...')
+                
+                // Redirect to dashboard after successful registration
+                setTimeout(() => {
+                    router.push('/dashboard')
+                    router.refresh()
+                }, 1000)
+            } else {
+                const errorData = await response.json()
+                toast.error(errorData.error || 'Registration failed')
+            }
+        } catch (error) {
+            console.error('Registration error:', error)
+            toast.error('An unexpected error occurred')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -104,17 +147,30 @@ export default function SignupPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="firstName">First name</Label>
-                                    <Input id="firstName" placeholder="John" required className="bg-background/50 border-border/50 h-11" />
+                                    <Input 
+                                        id="firstName" 
+                                        name="firstName"
+                                        placeholder="John" 
+                                        required 
+                                        className="bg-background/50 border-border/50 h-11" 
+                                    />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="lastName">Last name</Label>
-                                    <Input id="lastName" placeholder="Doe" required className="bg-background/50 border-border/50 h-11" />
+                                    <Input 
+                                        id="lastName" 
+                                        name="lastName"
+                                        placeholder="Doe" 
+                                        required 
+                                        className="bg-background/50 border-border/50 h-11" 
+                                    />
                                 </div>
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="m@example.com"
                                     required
@@ -127,6 +183,7 @@ export default function SignupPage() {
                                     <div className="relative">
                                         <Input
                                             id="password"
+                                            name="password"
                                             type={showPassword ? "text" : "password"}
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
