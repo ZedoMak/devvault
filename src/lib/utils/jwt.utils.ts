@@ -1,17 +1,26 @@
-import jwt from 'jsonwebtoken'
+import * as jose from 'jose'
 
 const JWT_SECRET = process.env.JWT_SECRET!
-const ACCESS_TOKEN_EXPIRY = '15m'
+const encodedSecret = new TextEncoder().encode(JWT_SECRET)
+const ACCESS_TOKEN_EXPIRY = '15m' // jose understands "15m", "1h", etc.
 
 export type JWTPayload = {
   userId: string
   role: string
 }
 
-export function signAccessToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY })
+export async function signAccessToken(payload: JWTPayload): Promise<string> {
+  const jwt = await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime(ACCESS_TOKEN_EXPIRY)
+    .sign(encodedSecret)
+  return jwt
 }
 
-export function verifyAccessToken(token: string): JWTPayload {
-  return jwt.verify(token, JWT_SECRET) as JWTPayload
+export async function verifyAccessToken(token: string): Promise<JWTPayload> {
+  const { payload } = await jose.jwtVerify(token, encodedSecret, {
+    algorithms: ['HS256'],
+  })
+  return payload as JWTPayload
 }
