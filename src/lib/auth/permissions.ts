@@ -10,8 +10,8 @@ export const rolePermissions: Record<Role, string[]> = {
   ],
   [Role.ADMIN]: [
     '/dashboard',
-    '/admin',
-    '/api/admin',
+    '/admin/',
+    '/api/admin/',
     '/api/protected/',
   ],
   [Role.SUPERADMIN]: ['*'], // wildcard for all routes

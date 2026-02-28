@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevVault
+
+A secure platform for managing development resources and user authentication built with Next.js, TypeScript, and Prisma.
+
+## Features
+
+- **Authentication**: Secure user authentication with JWT tokens
+- **Role-Based Access Control**: Support for USER, ADMIN, and SUPERADMIN roles
+- **Database Management**: PostgreSQL with Prisma ORM
+- **Type Safety**: Full TypeScript support with Zod validation
+- **Modern UI**: Tailwind CSS with dark mode support
+
+## Tech Stack
+
+- **Framework**: Next.js 16
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma
+- **Authentication**: JWT with bcrypt
+- **Styling**: Tailwind CSS
+- **Validation**: Zod
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd devvault
+```
 
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
+
+4. Update your `.env` file with the required variables:
+```
+DATABASE_URL="postgresql://username:password@localhost:5432/devvault"
+JWT_SECRET="your-super-secret-jwt-key-at-least-32-characters"
+JWT_EXPIRES_IN="7d"
+```
+
+5. Run database migrations:
+```bash
+npx prisma migrate dev
+```
+
+6. Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/           # Next.js app router
+├── lib/           # Utility libraries
+│   ├── auth/      # Authentication utilities
+│   ├── services/  # Business logic services
+│   ├── utils/     # Helper functions
+│   └── validations/ # Zod schemas
+├── middleware.ts  # Next.js middleware for auth
+└── types/         # TypeScript type definitions
+```
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `JWT_SECRET` | Secret key for JWT signing | Yes |
+| `JWT_EXPIRES_IN` | JWT token expiration time | No (default: 7d) |
+| `NODE_ENV` | Environment (development/production) | No (default: development) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
 
-## Deploy on Vercel
+## Database
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project uses PostgreSQL with Prisma. The schema includes:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Users**: User accounts with roles and authentication
+- **Sessions**: JWT session management
+- **Audit Logs**: Activity tracking
+
+## Security Features
+
+- Password hashing with bcrypt
+- JWT-based authentication
+- Role-based access control
+- Input validation with Zod
+- SQL injection prevention with Prisma
+- XSS protection with Next.js
