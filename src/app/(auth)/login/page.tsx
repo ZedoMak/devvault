@@ -10,10 +10,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
+import { FullScreenLoading } from '@/components/ui/FullScreenLoading'
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,13 +37,13 @@ export default function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json()
-                toast.success('Welcome back! Redirecting to dashboard...')
-                
+                setIsSuccess(true)
+
                 // Redirect to dashboard after successful login
                 setTimeout(() => {
                     router.push('/dashboard')
                     router.refresh()
-                }, 1000)
+                }, 800)
             } else {
                 const errorData = await response.json()
                 toast.error(errorData.error || 'Login failed')
@@ -56,6 +58,8 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen relative flex flex-col items-center justify-center p-4 overflow-hidden">
+            {isSuccess && <FullScreenLoading message="Securing your session..." />}
+
             {/* Dynamic Background */}
             <div className="fixed inset-0 bg-background/95 -z-20" />
             <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] -z-10" />

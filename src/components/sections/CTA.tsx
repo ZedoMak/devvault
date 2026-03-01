@@ -23,7 +23,7 @@ export default function CTA() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-                        <Link href="/signup">
+                        <Link href="/register">
                             <Button size="lg" className="h-14 px-8 text-base group bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all hover:scale-105">
                                 Start for free
                                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

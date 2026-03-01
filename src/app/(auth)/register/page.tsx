@@ -10,10 +10,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { FullScreenLoading } from '@/components/ui/FullScreenLoading'
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
     const [password, setPassword] = useState('')
     const [strength, setStrength] = useState(0)
     const router = useRouter()
@@ -56,10 +58,10 @@ export default function SignupPage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    firstName, 
-                    lastName, 
-                    email, 
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
                     password,
                     confirmPassword: password // Since we don't have separate confirm field
                 }),
@@ -67,13 +69,13 @@ export default function SignupPage() {
 
             if (response.ok) {
                 const data = await response.json()
-                toast.success('Account created successfully! Redirecting to dashboard...')
-                
+                setIsSuccess(true)
+
                 // Redirect to dashboard after successful registration
                 setTimeout(() => {
                     router.push('/dashboard')
                     router.refresh()
-                }, 1000)
+                }, 800)
             } else {
                 const errorData = await response.json()
                 toast.error(errorData.error || 'Registration failed')
@@ -88,6 +90,8 @@ export default function SignupPage() {
 
     return (
         <div className="min-h-screen relative flex flex-col items-center justify-center p-4 overflow-hidden">
+            {isSuccess && <FullScreenLoading message="Provisioning your vault..." />}
+
             {/* Dynamic Background */}
             <div className="fixed inset-0 bg-background/95 -z-20" />
             <div className="fixed top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/20 rounded-full blur-[120px] -z-10" />
@@ -147,22 +151,22 @@ export default function SignupPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="firstName">First name</Label>
-                                    <Input 
-                                        id="firstName" 
+                                    <Input
+                                        id="firstName"
                                         name="firstName"
-                                        placeholder="John" 
-                                        required 
-                                        className="bg-background/50 border-border/50 h-11" 
+                                        placeholder="John"
+                                        required
+                                        className="bg-background/50 border-border/50 h-11"
                                     />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label htmlFor="lastName">Last name</Label>
-                                    <Input 
-                                        id="lastName" 
+                                    <Input
+                                        id="lastName"
                                         name="lastName"
-                                        placeholder="Doe" 
-                                        required 
-                                        className="bg-background/50 border-border/50 h-11" 
+                                        placeholder="Doe"
+                                        required
+                                        className="bg-background/50 border-border/50 h-11"
                                     />
                                 </div>
                             </div>

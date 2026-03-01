@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname()
 
     return (
-        <Sidebar className="border-r border-border/40 bg-zinc-950/50 backdrop-blur-xl" {...props}>
+        <Sidebar className="border-r border-border/40 bg-zinc-950/50 backdrop-blur-xl" collapsible="icon" {...props}>
             <SidebarHeader className="h-16 flex justify-center px-4 border-b border-border/40">
                 <SidebarMenu>
                     <SidebarMenuItem>

@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { ConditionalRender } from "@/components/layout/ConditionalRender";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +34,13 @@ export default function RootLayout({
       >
         <TooltipProvider>
           <div className="min-h-screen flex flex-col">
-            <Header />
+            <ConditionalRender hideOnRoutes={['/dashboard']}>
+              <Header />
+            </ConditionalRender>
             <main className="flex-1">{children}</main>
-            <Footer />
+            <ConditionalRender hideOnRoutes={['/dashboard']}>
+              <Footer />
+            </ConditionalRender>
           </div>
           <Toaster />
         </TooltipProvider>

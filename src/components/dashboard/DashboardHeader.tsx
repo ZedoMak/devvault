@@ -15,13 +15,21 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+    user?: {
+        name: string | null;
+        email: string;
+        role: string;
+    } | null;
+}
+
+export function DashboardHeader({ user }: DashboardHeaderProps) {
     const { toggleSidebar } = useSidebar()
 
     return (
         <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-4">
-                <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden">
+                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Toggle sidebar</span>
                 </Button>
@@ -46,21 +54,21 @@ export function DashboardHeader() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                             <Avatar className="h-9 w-9 border border-primary/20 bg-background/50">
-                                <AvatarImage src="" alt="User admin" />
-                                <AvatarFallback className="bg-primary/10 text-primary">AD</AvatarFallback>
+                                <AvatarImage src="" alt={user?.name || "User"} />
+                                <AvatarFallback className="bg-primary/10 text-primary">{user?.name ? user.name.slice(0, 2).toUpperCase() : 'US'}</AvatarFallback>
                             </Avatar>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="end" forceMount>
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
-                                <p className="text-sm font-medium leading-none">Admin User</p>
+                                <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
                                 <p className="text-xs leading-none text-muted-foreground">
-                                    admin@devvault.com
+                                    {user?.email || 'user@example.com'}
                                 </p>
                                 <div className="mt-2">
                                     <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] w-fit">
-                                        SUPERADMIN
+                                        {user?.role?.toUpperCase() || 'USER'}
                                     </Badge>
                                 </div>
                             </div>

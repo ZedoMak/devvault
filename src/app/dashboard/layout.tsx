@@ -1,18 +1,26 @@
 import { AppSidebar } from '@/components/dashboard/AppSidebar'
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
+import { getCurrentUser } from '@/lib/services/auth.service'
+import { redirect } from 'next/navigation'
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
+    const user = await getCurrentUser()
+
+    if (!user) {
+        redirect('/login')
+    }
+
     return (
         <SidebarProvider>
             <div className="flex min-h-screen w-full bg-background selection:bg-primary/20">
                 <AppSidebar />
                 <SidebarInset className="flex flex-col flex-1 overflow-hidden w-full bg-background/95">
-                    <DashboardHeader />
+                    <DashboardHeader user={user} />
                     <main className="flex-1 overflow-y-auto p-4 lg:p-8">
                         <div className="mx-auto w-full max-w-7xl">
                             {children}
